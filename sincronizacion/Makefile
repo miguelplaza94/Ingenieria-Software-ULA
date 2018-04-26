@@ -1,8 +1,8 @@
- # Universidad de Los Andes
- # Sincronizacion de procesos
- # Asignatura: Sistemas Operativos
- # Autor: Alvaro Araujo
- # Fecha: 20/04/2018
+ # universidad de los andes
+ # sincronizacion de procesos
+ # asignatura: Sistemas Operativos
+ # autor: Alvaro Araujo
+ # fecha: 20/04/2018
 
 CC  = gcc
 INC =

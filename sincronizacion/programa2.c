@@ -1,8 +1,9 @@
-/* Universidad de Los Andes
- * Sincronizacion de procesos
- * Asignatura: Sistemas Operativos
- * Autor: Alvaro Araujo
- * Fecha: 20/04/2018
+
+/* universidad de los andes
+ * sincronizacion de procesos
+ * asignatura: sistemas operativos
+ * autor: alvaro araujo
+ * fecha: 20/04/2018
  */
 
 #include <stdio.h>
@@ -22,55 +23,56 @@ int llamadaSemaforo(int semId, int semNum, int op)
   sops.sem_num = semNum;
   sops.sem_op = op;
   sops.sem_flg = 0;
-  return (semop(semId, &sops, 1)); /*retorna -1 en caso de error */
+  return (semop(semId, &sops, 1)); /** retorna -1 en caso de error **/
 }
-
 
 int main()
 {
-  system("clear");
-  printf("\n--> Proceso %d \n\n",getpid());
-  srand(getpid());
 
+  int sem;
+
+  system("clear");
+  printf("\n\t--> proceso %d \n\n",getpid());
+  srand(getpid());
   key_t id_shmem = ftok(ROUTE, ID);
   void *pto_shmem;
   shmem_data *pto_inf;
   int i = 0, shmem, pos, repeticion;
 
-
-  int sem;
   if ((sem  = semget(SEM_ID, 1, 0644)) < 0) {
-    perror("Error al abrir el semaforo\n");
+    perror("\tsemget");
     exit(EXIT_FAILURE);
   }
 
 
-  /* Busqueda del segmento de memoria compartida */
+  /* busqueda del segmento de memoria compartida */
+
   if((shmem = shmget(id_shmem, sizeof(shmem_data), 0666)) < 0)
   {
-		perror("shmget");
+		perror("\tshmget");
 		exit(EXIT_FAILURE);
 	}
 
-  /* Vinculacion al segmento */
+  /* vinculacion al segmento */
+
 	if((pto_shmem = shmat(shmem, NULL, 0)) == (char *) -1)
 	{
-		perror("shmat");
+		perror("\tshmat");
 		exit(EXIT_FAILURE);
 	}
 
 	pto_inf = (shmem_data *) pto_shmem;
-  	pos = shmem_init(pto_inf);
+  pos = shmem_init(pto_inf);
 
   if(pos == -1)
   {
     if(shmdt(pto_shmem) == -1)
 	  {
-		  perror("shmdt");
+		  perror("\tshmdt");
 		  exit(EXIT_FAILURE);
 	  }
 
-    printf("\tMonitor sin espacio!!!\n\n");
+    printf("\t\tmonitor sin espacio!!!\n\n");
     exit(EXIT_SUCCESS);
   }
 
@@ -80,19 +82,20 @@ int main()
   for(i=0; i<repeticion; i++)
   {
     pto_inf->array_p[pos].numero++;
-    printf("Numero: %d\n",i);
+
+    printf("\tnumero: %d\n",i);
     usleep(400000);
+
   }
 
   pto_inf->array_p[pos].termino = 1;
   if(shmdt(pto_shmem) == -1)
 	{
-	  perror("shmdt");
+	  perror("\tshmdt");
 	  exit(EXIT_FAILURE);
 	}
 
   llamadaSemaforo(sem, 0, 1);
-
   return(0);
 }
 
