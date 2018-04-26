@@ -1,9 +1,9 @@
 
-/* Universidad de Los Andes
- * Sincronizacion de procesos
- * Asignatura: Sistemas Operativos
- * Autor: Alvaro Araujo
- * Fecha: 20/04/2018
+/* universidad de los andes
+ * sincronizacion de procesos
+ * asignatura: sistemas operativos
+ * autor: alvaro araujo
+ * fecha: 20/04/2018
  */
 
 #include <stdio.h>
@@ -21,7 +21,7 @@ void exit_signal(int);
 
 int main() {
   system("clear");
-  printf("\n\t_______________________  Monitor De Procesos _______________________\n\n");
+  printf("\n\t_______________________  monitor de procesos _______________________\n\n");
 
   key_t id_shmem = ftok(ROUTE, ID);
   void * pto_shmem;
@@ -31,7 +31,7 @@ int main() {
 
   int sem;
 
-  /* Creacion del semaforo controlador de procesos,
+  /* creacion del semaforo controlador de procesos,
    * solo se aceptaran 4 procesos a la vez en el monitor
    */
   if ((sem  = semget(SEM_ID, 1, IPC_CREAT | 0644)) < 0) {
@@ -39,24 +39,24 @@ int main() {
     return(-1);
   }
 
-  /** Inicializacion del semaforo **/
+  /** inicializacion del semaforo **/
   semctl(sem, 0, SETVAL, 4);
 
-  /** Creacion del segmento de memoria compartida **/
+  /** creacion del segmento de memoria compartida **/
   if((shmem = shmget(id_shmem, sizeof(shmem_data), IPC_CREAT | 0666)) < 0)
   {
 		perror("\tshmget");
 		exit(EXIT_FAILURE);
   }
 
-  /** Vinculacion al segmento **/
+  /** vinculacion al segmento **/
 	if ((pto_shmem = shmat(shmem, NULL, 0)) == (char *) -1)
 	{
 		perror("\tshmat");
 		exit(EXIT_FAILURE);
 	}
 
-  /** Inicializacion **/
+  /** inicializacion **/
   pto_inf = (shmem_data *) pto_shmem;
   shmem_init(pto_inf);
 
@@ -86,8 +86,8 @@ void show_mon(shmem_data *pto_inf)
 {
   int i=0;
   system("clear");
-  printf("\n\t_______________________  Monitor De Procesos %d _______________________\n\n",pto_inf->pid_mon);
-  printf("\t\t PID\tNUMERO\tTERMINO\n");
+  printf("\n\t_______________________  monitor de procesos %d _______________________\n\n",pto_inf->pid_mon);
+  printf("\t\t pid\tnumero\ttermino\n");
   printf("\t\t-------------------------\n");
   for(i; i<10; i++)
   {
@@ -96,9 +96,9 @@ void show_mon(shmem_data *pto_inf)
       printf(" \t\t%d\t%d\t", pto_inf->array_p[i].pid,pto_inf->array_p[i].numero);
       fflush(stdout);
       if(pto_inf->array_p[i].termino == 0)
-        printf("\tNO \n");
+        printf("\tno \n");
       else
-        printf("\tSI \n");
+        printf("\tsi \n");
 
       fflush(stdout);
     }
@@ -118,7 +118,7 @@ void exit_signal(int num_signal)
 
   if (semctl(sem, 0, IPC_RMID, 0) == -1)
   {
-    perror("\tError al eliminar el semaforo");
+    perror("\terror al eliminar el semaforo");
     exit(EXIT_FAILURE);
   }
 
@@ -136,6 +136,6 @@ void exit_signal(int num_signal)
 	}
 
 	system("clear");
-	printf("\tHasta luego!\n");
+	printf("\thasta luego!\n");
   exit(EXIT_SUCCESS);
 }
