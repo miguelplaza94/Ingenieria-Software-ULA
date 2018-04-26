@@ -51,7 +51,7 @@ int main()
 		exit(EXIT_FAILURE);
 	}
 
-  /* Vinculación al segmento */
+  /* Vinculacion al segmento */
 	if((pto_shmem = shmat(shmem, NULL, 0)) == (char *) -1)
 	{
 		perror("\tshmat");
